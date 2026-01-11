@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generateur de Rapport de Stage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <div class="max-w-screen-xl mx-auto flex gap-4 p-4">
+
+        <!-- LEFT: Formulaire avec Tabs (60%) -->
+        <div class="w-3/5">
+            <div class="bg-white rounded-lg shadow">
+
+                <!-- Tabs Navigation -->
+                <div class="border-b">
+                    <nav class="flex">
+                        <button class="tab-btn active" data-tab="infos">Informations</button>
+                        <button class="tab-btn" data-tab="structure">Structure</button>
+                        <button class="tab-btn" data-tab="mise-en-page">Mise en page</button>
+                    </nav>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="p-6">
+
+                    <!-- Tab 1: Informations -->
+                    <div class="tab-content active" id="tab-infos">
+
+                        <!-- Etudiant -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Etudiant</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label>Prenom</label>
+                                    <input type="text" id="prenom" placeholder="Mouad">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" id="nom" placeholder="BOUFENZI">
+                                </div>
+                                <div class="form-group">
+                                    <label>Formation</label>
+                                    <input type="text" id="formation" placeholder="Master 2 Informatique">
+                                </div>
+                                <div class="form-group">
+                                    <label>Universite</label>
+                                    <input type="text" id="ecole" placeholder="UTBM">
+                                </div>
+                                <div class="form-group">
+                                    <label>Annee scolaire</label>
+                                    <input type="text" id="annee_scolaire" placeholder="2024-2025">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Entreprise -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Entreprise</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" id="entreprise_nom" placeholder="Nom entreprise">
+                                </div>
+                                <div class="form-group">
+                                    <label>Secteur</label>
+                                    <input type="text" id="entreprise_secteur" placeholder="Secteur d'activite">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ville</label>
+                                    <input type="text" id="entreprise_ville" placeholder="Ville">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tuteurs -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Tuteurs</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label>Tuteur entreprise</label>
+                                    <input type="text" id="tuteur_nom" placeholder="DAUTRY Martin">
+                                </div>
+                                <div class="form-group">
+                                    <label>Poste</label>
+                                    <input type="text" id="tuteur_poste" placeholder="Poste">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tuteur academique</label>
+                                    <input type="text" id="tuteur_academique_nom" placeholder="Nom du tuteur">
+                                </div>
+                                <div class="form-group">
+                                    <label>Poste</label>
+                                    <input type="text" id="tuteur_academique_poste" placeholder="Professeur">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stage -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Stage</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label>Date debut</label>
+                                    <input type="date" id="date_debut">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date fin</label>
+                                    <input type="date" id="date_fin">
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label>Poste</label>
+                                    <input type="text" id="poste" placeholder="Intitule du poste">
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label>Mission principale</label>
+                                    <textarea id="mission_principale" rows="2" placeholder="Description de la mission"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modele page de garde -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Modele de page de garde</h3>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="model-option">
+                                    <input type="radio" name="cover_model" value="classique" checked onchange="updatePreview()">
+                                    <div class="model-preview model-classique">
+                                        <div class="mp-logos"></div>
+                                        <div class="mp-title"></div>
+                                        <div class="mp-line"></div>
+                                        <div class="mp-info"></div>
+                                    </div>
+                                    <span>Classique</span>
+                                </label>
+                                <label class="model-option">
+                                    <input type="radio" name="cover_model" value="moderne" onchange="updatePreview()">
+                                    <div class="model-preview model-moderne">
+                                        <div class="mp-banner"></div>
+                                        <div class="mp-title"></div>
+                                        <div class="mp-info"></div>
+                                    </div>
+                                    <span>Moderne</span>
+                                </label>
+                                <label class="model-option">
+                                    <input type="radio" name="cover_model" value="corporate" onchange="updatePreview()">
+                                    <div class="model-preview model-corporate">
+                                        <div class="mp-sidebar"></div>
+                                        <div class="mp-content"></div>
+                                    </div>
+                                    <span>Corporate</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Logos -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Images (optionnel)</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="logo-box">
+                                    <label>Logo ecole</label>
+                                    <div class="logo-preview" id="logoEcolePreview"><span>Aucun</span></div>
+                                    <input type="file" id="logoEcole" accept="image/*" onchange="previewLogo(this, 'logoEcolePreview', 'logo_ecole')" hidden>
+                                    <button class="btn-sm" onclick="document.getElementById('logoEcole').click()">Choisir</button>
+                                </div>
+                                <div class="logo-box">
+                                    <label>Image bandeau</label>
+                                    <div class="logo-preview" id="imageCentralePreview"><span>Aucune</span></div>
+                                    <input type="file" id="imageCentrale" accept="image/*" onchange="previewLogo(this, 'imageCentralePreview', 'image_centrale')" hidden>
+                                    <button class="btn-sm" onclick="document.getElementById('imageCentrale').click()">Choisir</button>
+                                </div>
+                                <div class="logo-box">
+                                    <label>Logo entreprise</label>
+                                    <div class="logo-preview" id="logoEntreprisePreview"><span>Aucun</span></div>
+                                    <input type="file" id="logoEntreprise" accept="image/*" onchange="previewLogo(this, 'logoEntreprisePreview', 'logo_entreprise')" hidden>
+                                    <button class="btn-sm" onclick="document.getElementById('logoEntreprise').click()">Choisir</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button class="btn-primary" onclick="goToTab('structure')">Suivant</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Structure -->
+                    <div class="tab-content" id="tab-structure">
+
+                        <!-- Sections a inclure -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Sections a inclure</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="checkbox-label"><input type="checkbox" id="include_cover" checked> Page de garde</label>
+                                <label class="checkbox-label"><input type="checkbox" id="include_thanks" checked> Remerciements</label>
+                                <label class="checkbox-label"><input type="checkbox" id="include_toc" checked> Table des matieres</label>
+                                <label class="checkbox-label"><input type="checkbox" id="include_abstract"> Resume / Abstract</label>
+                                <label class="checkbox-label"><input type="checkbox" id="include_annexes" checked> Annexes</label>
+                            </div>
+                        </div>
+
+                        <!-- Chapitres -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="section-title mb-0">Chapitres</h3>
+                                <button class="btn-sm" onclick="addChapter()">+ Ajouter</button>
+                            </div>
+                            <div id="chaptersContainer" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button class="btn-secondary" onclick="goToTab('infos')">Precedent</button>
+                            <button class="btn-primary" onclick="goToTab('mise-en-page')">Suivant</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Mise en page -->
+                    <div class="tab-content" id="tab-mise-en-page">
+
+                        <!-- Typographie -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Typographie</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="form-group">
+                                    <label>Police</label>
+                                    <select id="font_family">
+                                        <option value="Times New Roman">Times New Roman</option>
+                                        <option value="Arial">Arial</option>
+                                        <option value="Calibri">Calibri</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Taille</label>
+                                    <select id="font_size">
+                                        <option value="11">11 pt</option>
+                                        <option value="12" selected>12 pt</option>
+                                        <option value="13">13 pt</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Interligne</label>
+                                    <select id="line_spacing">
+                                        <option value="1">Simple</option>
+                                        <option value="1.5" selected>1.5</option>
+                                        <option value="2">Double</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Styles titres -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Styles des titres</h3>
+                            <div class="space-y-3">
+                                <div class="style-row">
+                                    <span>Titre 1</span>
+                                    <select id="title1_size"><option value="14">14</option><option value="16" selected>16</option><option value="18">18</option></select>
+                                    <label><input type="checkbox" id="title1_bold" checked> Gras</label>
+                                    <input type="color" id="title1_color" value="#1a365d">
+                                </div>
+                                <div class="style-row">
+                                    <span>Titre 2</span>
+                                    <select id="title2_size"><option value="12">12</option><option value="14" selected>14</option><option value="16">16</option></select>
+                                    <label><input type="checkbox" id="title2_bold" checked> Gras</label>
+                                    <input type="color" id="title2_color" value="#000000">
+                                </div>
+                                <div class="style-row">
+                                    <span>Titre 3</span>
+                                    <select id="title3_size"><option value="11">11</option><option value="12" selected>12</option><option value="13">13</option></select>
+                                    <label><input type="checkbox" id="title3_italic" checked> Italique</label>
+                                    <input type="color" id="title3_color" value="#333333">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marges -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Marges (cm)</h3>
+                            <div class="grid grid-cols-4 gap-4">
+                                <div class="form-group">
+                                    <label>Haut</label>
+                                    <input type="number" id="margin_top" value="2.5" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Bas</label>
+                                    <input type="number" id="margin_bottom" value="2.5" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Gauche</label>
+                                    <input type="number" id="margin_left" value="2.5" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Droite</label>
+                                    <input type="number" id="margin_right" value="2.5" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="mb-6">
+                            <h3 class="section-title">Pied de page</h3>
+                            <div class="flex gap-6">
+                                <label class="checkbox-label"><input type="checkbox" id="show_page_number" checked> Numero de page</label>
+                                <label class="checkbox-label"><input type="checkbox" id="show_student_name" checked> Nom etudiant</label>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button class="btn-secondary" onclick="goToTab('structure')">Precedent</button>
+                            <div class="flex gap-2">
+                                <button class="btn-primary" onclick="generateReport('docx')">Telecharger Word</button>
+                                <button class="btn-pdf" onclick="generateReport('pdf')">Telecharger PDF</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Apercu (40%) -->
+        <div class="w-2/5">
+            <div class="bg-white rounded-lg shadow p-4 sticky top-4">
+                <h3 class="text-sm font-medium text-gray-600 mb-3">Apercu</h3>
+                <div id="documentPreview" class="preview-box"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="saveIndicator" class="save-indicator"><span>Sauvegarde</span></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
