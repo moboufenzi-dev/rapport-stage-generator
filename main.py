@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
+from pathlib import Path
 import io
 import subprocess
 import tempfile
@@ -11,10 +12,13 @@ import os
 
 from generator import generate_report
 
+# Chemins absolus pour production
+BASE_DIR = Path(__file__).resolve().parent
+
 app = FastAPI(title="Générateur de Rapport de Stage v3")
 
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 
 # ===== MODELS =====
