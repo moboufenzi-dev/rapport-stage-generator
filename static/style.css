@@ -12,14 +12,14 @@
 }
 
 .tab-btn:hover {
-    color: #4f46e5;
-    background: #f9fafb;
+    color: #2b579a;
+    background: #f5f7fa;
 }
 
 .tab-btn.active {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
-    background: #eef2ff;
+    color: #2b579a;
+    border-bottom-color: #2b579a;
+    background: #e8eef7;
 }
 
 .tab-content {
@@ -58,56 +58,60 @@
 }
 
 .checkbox-label input[type="checkbox"] {
-    accent-color: #4f46e5;
+    accent-color: #2b579a;
 }
 
 /* ===== BUTTONS ===== */
 .btn-sm {
     padding: 0.375rem 0.75rem;
-    background: #4f46e5;
+    background: #2b579a;
     color: white;
     font-weight: 500;
     font-size: 0.75rem;
     border: none;
-    border-radius: 0.375rem;
+    border-radius: 0.25rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.15s;
 }
 
 .btn-sm:hover {
-    background: #4338ca;
+    background: #1e3f73;
 }
 
 .btn-primary {
     padding: 0.625rem 1.25rem;
-    background: #4f46e5;
+    background: #2b579a;
     color: white;
     font-weight: 500;
     font-size: 0.875rem;
     border: none;
-    border-radius: 0.375rem;
+    border-radius: 0.25rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.15s ease;
 }
 
 .btn-primary:hover {
-    background: #4338ca;
+    background: #1e3f73;
+}
+
+.btn-primary:active {
+    background: #163054;
 }
 
 .btn-secondary {
     padding: 0.625rem 1.25rem;
-    background: #f3f4f6;
-    color: #374151;
+    background: #f3f3f3;
+    color: #2b579a;
     font-weight: 500;
     font-size: 0.875rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
+    border: 1px solid #2b579a;
+    border-radius: 0.25rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
 }
 
 .btn-secondary:hover {
-    background: #e5e7eb;
+    background: #e6e6e6;
 }
 
 .btn-pdf {
@@ -226,7 +230,7 @@
 }
 
 .model-option input:checked + .model-preview {
-    border-color: #4f46e5;
+    border-color: #2b579a;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
@@ -236,106 +240,120 @@
 }
 
 .model-option input:checked ~ span {
-    color: #4f46e5;
+    color: #2b579a;
     font-weight: 600;
 }
 
-/* Modele Classique */
+/* Modele Classique - Cadre elegant */
 .model-classique .mp-logos {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .model-classique .mp-logos::before,
 .model-classique .mp-logos::after {
     content: '';
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: #e5e7eb;
     border-radius: 2px;
 }
-.model-classique .mp-title {
-    height: 10px;
-    background: #1a365d;
-    margin: 0 10px 6px;
+.model-classique .mp-frame {
+    border: 2px solid #1a365d;
     border-radius: 2px;
-}
-.model-classique .mp-line {
-    height: 1px;
-    background: #1a365d;
-    margin: 4px 15px;
-}
-.model-classique .mp-info {
-    height: 6px;
-    background: #e5e7eb;
-    margin: 4px 20px;
-    border-radius: 1px;
-}
-.model-classique .mp-info::after {
-    content: '';
-    display: block;
-    height: 6px;
-    background: #e5e7eb;
-    margin-top: 4px;
-    border-radius: 1px;
-}
-
-/* Modele Moderne */
-.model-moderne .mp-banner {
-    height: 35px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    margin: -6px -6px 8px -6px;
-}
-.model-moderne .mp-title {
-    height: 8px;
-    background: #1a365d;
-    margin: 0 15px 6px;
-    border-radius: 2px;
-}
-.model-moderne .mp-info {
-    height: 5px;
-    background: #e5e7eb;
-    margin: 3px 20px;
-    border-radius: 1px;
-}
-.model-moderne .mp-info::after {
-    content: '';
-    display: block;
-    height: 5px;
-    background: #e5e7eb;
-    margin-top: 3px;
-    border-radius: 1px;
-}
-
-/* Modele Corporate */
-.model-corporate {
-    display: flex;
-    padding: 0;
-}
-.model-corporate .mp-sidebar {
-    width: 18px;
-    background: #1a365d;
-    border-radius: 4px 0 0 4px;
-}
-.model-corporate .mp-content {
-    flex: 1;
     padding: 8px 6px;
+    margin: 0 8px;
 }
-.model-corporate .mp-content::before {
+.model-classique .mp-frame::before {
     content: '';
     display: block;
-    height: 8px;
+    height: 10px;
     background: #1a365d;
     margin-bottom: 6px;
     border-radius: 2px;
 }
-.model-corporate .mp-content::after {
+.model-classique .mp-frame::after {
     content: '';
     display: block;
     height: 5px;
     background: #e5e7eb;
-    margin-top: 6px;
+    margin-top: 4px;
     border-radius: 1px;
+}
+.model-classique .mp-info {
+    height: 5px;
+    background: #e5e7eb;
+    margin: 6px 15px 0;
+    border-radius: 1px;
+}
+
+/* Modele Moderne - Bandeau colore */
+.model-moderne .mp-banner {
+    height: 30px;
+    background: #1a365d;
+    margin: -6px -6px 0 -6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.model-moderne .mp-banner::before {
+    content: '';
+    width: 40px;
+    height: 6px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+}
+.model-moderne .mp-content-center {
+    padding: 10px 8px;
+    text-align: center;
+}
+.model-moderne .mp-content-center::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+}
+.model-moderne .mp-content-center::after {
+    content: '';
+    display: block;
+    height: 5px;
+    background: #e5e7eb;
+    margin: 0 10px;
+    border-radius: 1px;
+}
+
+/* Modele Elegant - Ligne verticale */
+.model-elegant {
+    display: flex;
+    padding: 0;
+}
+.model-elegant .mp-stripe {
+    width: 6px;
+    background: #1a365d;
+    border-radius: 4px 0 0 4px;
+}
+.model-elegant .mp-content {
+    flex: 1;
+    padding: 10px 8px;
+}
+.model-elegant .mp-content::before {
+    content: 'RAPPORT';
+    display: block;
+    font-size: 7px;
+    font-weight: bold;
+    color: #1a365d;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.model-elegant .mp-content::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: #1a365d;
+    margin: 8px 0;
 }
 
 /* ===== SUBSECTIONS ===== */
@@ -383,7 +401,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #4f46e5;
+    border-color: #2b579a;
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
 }
 
@@ -407,13 +425,13 @@
 .checkbox-label-sm input {
     width: 0.875rem;
     height: 0.875rem;
-    accent-color: #4f46e5;
+    accent-color: #2b579a;
 }
 
 /* ===== BUTTONS ===== */
 .btn-add {
     padding: 0.375rem 0.75rem;
-    background: #4f46e5;
+    background: #2b579a;
     color: white;
     font-weight: 600;
     font-size: 0.875rem;
@@ -424,7 +442,7 @@
 }
 
 .btn-add:hover {
-    background: #4338ca;
+    background: #1e3f73;
 }
 
 .btn-upload {
@@ -443,7 +461,7 @@
 
 .btn-generate-sm {
     padding: 0.5rem 1rem;
-    background: #4f46e5;
+    background: #2b579a;
     color: white;
     font-weight: 500;
     font-size: 0.875rem;
@@ -454,7 +472,7 @@
 }
 
 .btn-generate-sm:hover {
-    background: #4338ca;
+    background: #1e3f73;
 }
 
 .btn-pdf-sm {
@@ -567,7 +585,7 @@
 
 .chapter-number {
     font-weight: 600;
-    color: #4f46e5;
+    color: #2b579a;
     min-width: 30px;
     font-size: 0.75rem;
 }
@@ -582,7 +600,7 @@
 }
 
 .chapter-input:focus {
-    border-color: #4f46e5;
+    border-color: #2b579a;
     background: white;
     outline: none;
 }
@@ -617,8 +635,8 @@
 }
 
 .chapter-actions button.add-sub {
-    background: #dbeafe;
-    color: #2563eb;
+    background: #e8eef7;
+    color: #2b579a;
 }
 
 /* ===== LIST ITEMS (Glossary, Figures, Gantt) ===== */
@@ -635,7 +653,7 @@
 
 .list-item-num {
     font-weight: 600;
-    color: #4f46e5;
+    color: #2b579a;
     min-width: 20px;
 }
 
@@ -750,6 +768,12 @@
     padding-left: 0.75rem;
 }
 
+.preview-toc-item.level-3 {
+    padding-left: 1.5rem;
+    font-size: 8px;
+    color: #6b7280;
+}
+
 .preview-footer-bar {
     margin-top: 0.75rem;
     padding-top: 0.375rem;
@@ -807,28 +831,680 @@
 
 .preview-gantt-bar {
     height: 10px;
-    background: #4f46e5;
+    background: #2b579a;
     border-radius: 2px;
 }
 
 /* ===== SAVE INDICATOR ===== */
 .save-indicator {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    padding: 0.5rem 0.75rem;
-    background: #10b981;
+    top: 5rem;
+    right: 1.5rem;
+    padding: 0.75rem 1.25rem;
+    background: #22c55e;
     color: white;
-    border-radius: 0.375rem;
-    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+    z-index: 100;
 }
 
 .save-indicator.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+/* ===== MODEL CARDS (Tab Modeles) ===== */
+.model-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.model-card:hover {
+    border-color: #a5b4fc;
+    background: #f9fafb;
+}
+
+.model-card:has(input:checked) {
+    border-color: #2b579a;
+    background: #eef2ff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.model-card input[type="radio"] {
+    display: none;
+}
+
+.model-thumb {
+    width: 100%;
+    height: 120px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.model-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.125rem;
+}
+
+.model-desc {
+    font-size: 0.6875rem;
+    color: #9ca3af;
+}
+
+/* Modele Classique - Style academique standard */
+.model-thumb.model-classique {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.model-thumb.model-classique .mt-logos {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-classique .mt-logos::before,
+.model-thumb.model-classique .mt-logos::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background: #e5e7eb;
+    border-radius: 2px;
+}
+
+.model-thumb.model-classique .mt-title {
+    width: 60%;
+    height: 12px;
+    background: #1a365d;
+    border-radius: 2px;
+    margin-bottom: 6px;
+}
+
+.model-thumb.model-classique .mt-subtitle {
+    width: 80%;
+    height: 6px;
+    background: #d1d5db;
+    border-radius: 2px;
+    margin-bottom: 12px;
+}
+
+.model-thumb.model-classique .mt-info {
+    width: 50%;
+    height: 5px;
+    background: #e5e7eb;
+    border-radius: 1px;
+}
+
+/* Modele Moderne - Bandeau colore */
+.model-thumb.model-moderne {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.model-thumb.model-moderne .mt-banner {
+    width: 100%;
+    height: 35px;
+    background: #1a365d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.model-thumb.model-moderne .mt-banner::before {
+    content: '';
+    width: 50px;
+    height: 8px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+}
+
+.model-thumb.model-moderne .mt-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+}
+
+.model-thumb.model-moderne .mt-content::before {
+    content: '';
+    width: 25px;
+    height: 25px;
+    background: #e5e7eb;
+    border-radius: 50%;
+}
+
+.model-thumb.model-moderne .mt-content::after {
+    content: '';
+    width: 60%;
+    height: 5px;
+    background: #e5e7eb;
+    border-radius: 2px;
+}
+
+/* Modele Elegant - Ligne verticale */
+.model-thumb.model-elegant {
+    display: flex;
+    padding: 0;
+}
+
+.model-thumb.model-elegant .mt-stripe {
+    width: 8px;
+    height: 100%;
+    background: #1a365d;
+}
+
+.model-thumb.model-elegant .mt-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.model-thumb.model-elegant .mt-content::before {
+    content: 'RAPPORT';
+    font-size: 7px;
+    font-weight: bold;
+    color: #1a365d;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-elegant .mt-content::after {
+    content: '';
+    width: 100%;
+    height: 1px;
+    background: #1a365d;
+    margin: 8px 0;
+}
+
+/* Modele Minimaliste - Ultra epure */
+.model-thumb.model-minimaliste {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.model-thumb.model-minimaliste .mt-min-title {
+    width: 50%;
+    height: 14px;
+    background: #374151;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-minimaliste .mt-min-line {
+    width: 30px;
+    height: 2px;
+    background: #374151;
+    margin-bottom: 15px;
+}
+
+.model-thumb.model-minimaliste .mt-min-info {
+    width: 40%;
+    height: 5px;
+    background: #d1d5db;
+}
+
+/* Modele Academique - Cadre double */
+.model-thumb.model-academique {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.model-thumb.model-academique .mt-acad-border {
+    width: 100%;
+    height: 100%;
+    border: 2px solid #1a365d;
+    padding: 4px;
+}
+
+.model-thumb.model-academique .mt-acad-content {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #1a365d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.model-thumb.model-academique .mt-acad-content::before {
+    content: '';
+    width: 50%;
+    height: 10px;
+    background: #1a365d;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-academique .mt-acad-content::after {
+    content: '';
+    width: 35%;
+    height: 5px;
+    background: #d1d5db;
+}
+
+/* Modele Geometrique - Formes modernes */
+.model-thumb.model-geometrique {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+
+.model-thumb.model-geometrique .mt-geo-shapes {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #2b579a 50%, transparent 50%);
+}
+
+.model-thumb.model-geometrique .mt-geo-shapes::before {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: -10px;
+    width: 40px;
+    height: 40px;
+    background: rgba(79, 70, 229, 0.2);
+    border-radius: 50%;
+}
+
+.model-thumb.model-geometrique .mt-geo-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 15px;
+    z-index: 1;
+}
+
+.model-thumb.model-geometrique .mt-geo-content::before {
+    content: '';
+    width: 60%;
+    height: 10px;
+    background: #1a365d;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-geometrique .mt-geo-content::after {
+    content: '';
+    width: 45%;
+    height: 5px;
+    background: #d1d5db;
+}
+
+/* Modele Bicolore - Split vertical */
+.model-thumb.model-bicolore {
+    display: flex;
+    padding: 0;
+}
+
+.model-thumb.model-bicolore .mt-bic-left {
+    width: 40%;
+    height: 100%;
+    background: #1a365d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.model-thumb.model-bicolore .mt-bic-left::before {
+    content: '';
+    width: 30px;
+    height: 30px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-bicolore .mt-bic-left::after {
+    content: '';
+    width: 80%;
+    height: 4px;
+    background: rgba(255,255,255,0.5);
+}
+
+.model-thumb.model-bicolore .mt-bic-right {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px;
+}
+
+.model-thumb.model-bicolore .mt-bic-right::before {
+    content: '';
+    width: 70%;
+    height: 8px;
+    background: #374151;
+    margin-bottom: 6px;
+}
+
+.model-thumb.model-bicolore .mt-bic-right::after {
+    content: '';
+    width: 50%;
+    height: 5px;
+    background: #d1d5db;
+}
+
+/* Modele Pro - Business corporate */
+.model-thumb.model-pro {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.model-thumb.model-pro .mt-pro-header {
+    width: 100%;
+    height: 20px;
+    background: #1a365d;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.model-thumb.model-pro .mt-pro-header::before {
+    content: '';
+    width: 15px;
+    height: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 1px;
+}
+
+.model-thumb.model-pro .mt-pro-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.model-thumb.model-pro .mt-pro-body::before {
+    content: '';
+    width: 65%;
+    height: 12px;
+    background: #374151;
+}
+
+.model-thumb.model-pro .mt-pro-body::after {
+    content: '';
+    width: 45%;
+    height: 5px;
+    background: #d1d5db;
+}
+
+.model-thumb.model-pro .mt-pro-footer {
+    width: 100%;
+    height: 15px;
+    border-top: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.model-thumb.model-pro .mt-pro-footer::before {
+    content: '';
+    width: 30%;
+    height: 3px;
+    background: #d1d5db;
+}
+
+/* Modele Gradient - Degrade colore */
+.model-thumb.model-gradient {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.model-thumb.model-gradient .mt-grad-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.model-thumb.model-gradient .mt-grad-content {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.model-thumb.model-gradient .mt-grad-content::before {
+    content: '';
+    width: 50px;
+    height: 10px;
+    background: white;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.model-thumb.model-gradient .mt-grad-content::after {
+    content: '';
+    width: 35px;
+    height: 5px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+}
+
+/* Modele Timeline - Frise temporelle */
+.model-thumb.model-timeline {
+    display: flex;
+    padding: 10px;
+    position: relative;
+}
+
+.model-thumb.model-timeline .mt-tl-line {
+    position: absolute;
+    left: 20px;
+    top: 15px;
+    bottom: 15px;
+    width: 3px;
+    background: linear-gradient(to bottom, #2b579a, #818cf8);
+    border-radius: 2px;
+}
+
+.model-thumb.model-timeline .mt-tl-line::before,
+.model-thumb.model-timeline .mt-tl-line::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    width: 11px;
+    height: 11px;
+    background: #2b579a;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.model-thumb.model-timeline .mt-tl-line::before {
+    top: 0;
+}
+
+.model-thumb.model-timeline .mt-tl-line::after {
+    bottom: 0;
+    background: #818cf8;
+}
+
+.model-thumb.model-timeline .mt-tl-content {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.model-thumb.model-timeline .mt-tl-content::before {
+    content: '';
+    width: 50px;
+    height: 10px;
+    background: #1a365d;
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-timeline .mt-tl-content::after {
+    content: '';
+    width: 35px;
+    height: 5px;
+    background: #d1d5db;
+    border-radius: 2px;
+}
+
+/* Modele Creative - Design original */
+.model-thumb.model-creative {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.model-thumb.model-creative .mt-crea-circle {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.model-thumb.model-creative .mt-crea-circle::before {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: -80px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.model-thumb.model-creative .mt-crea-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.model-thumb.model-creative .mt-crea-content::before {
+    content: 'STAGE';
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    color: #1a365d;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.model-thumb.model-creative .mt-crea-content::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 5px;
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+    border-radius: 3px;
+    margin: 0 auto;
+}
+
+/* Modele Luxe - Elegant et raffine */
+.model-thumb.model-luxe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+.model-thumb.model-luxe .mt-luxe-border {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border: 2px solid #b8860b;
+    pointer-events: none;
+}
+
+.model-thumb.model-luxe .mt-luxe-border::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px solid #b8860b;
+}
+
+.model-thumb.model-luxe .mt-luxe-content {
+    text-align: center;
+    z-index: 1;
+}
+
+.model-thumb.model-luxe .mt-luxe-content::before {
+    content: 'RAPPORT';
+    display: block;
+    font-size: 9px;
+    font-weight: bold;
+    color: #b8860b;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+
+.model-thumb.model-luxe .mt-luxe-content::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: #b8860b;
+    margin: 6px auto;
 }
 
 /* ===== RESPONSIVE ===== */

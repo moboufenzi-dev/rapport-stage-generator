@@ -95,6 +95,13 @@ function renderChapters() {
 
         chapter.children.forEach((sub, subIndex) => {
             container.appendChild(createChapterElement(sub, subIndex, `${chapterNum}.${subIndex + 1}`, index));
+
+            // Niveau 3 : sous-sous-chapitres
+            if (sub.children) {
+                sub.children.forEach((subsub, subsubIndex) => {
+                    container.appendChild(createChapterElement(subsub, subsubIndex, `${chapterNum}.${subIndex + 1}.${subsubIndex + 1}`, index, subIndex));
+                });
+            }
         });
     });
 
@@ -102,11 +109,12 @@ function renderChapters() {
     updatePreview();
 }
 
-function createChapterElement(chapter, index, number, parentIndex = null) {
+function createChapterElement(chapter, index, number, parentIndex = null, grandParentSubIndex = null) {
     const div = document.createElement('div');
     div.className = `chapter-item level-${chapter.level}`;
 
-    const canAddSub = chapter.level < 2;
+    // Permettre d'ajouter des sous-éléments jusqu'au niveau 2 (pour créer niveau 3)
+    const canAddSub = chapter.level < 3;
     const canMove = parentIndex === null;
 
     div.innerHTML = `
@@ -114,7 +122,7 @@ function createChapterElement(chapter, index, number, parentIndex = null) {
         <input type="text" class="chapter-input" value="${chapter.title}"
                onchange="updateChapterTitle(${chapter.id}, this.value)">
         <div class="chapter-actions">
-            ${canAddSub ? `<button class="add-sub" onclick="addSubChapter(${chapter.id})">+</button>` : ''}
+            ${canAddSub ? `<button class="add-sub" onclick="addSubChapter(${chapter.id}, ${chapter.level})">+</button>` : ''}
             ${canMove ? `<button onclick="moveChapter(${index}, -1)">↑</button>` : ''}
             ${canMove ? `<button onclick="moveChapter(${index}, 1)">↓</button>` : ''}
             <button class="delete" onclick="deleteChapter(${chapter.id})">×</button>
@@ -129,13 +137,23 @@ function addChapter() {
     renderChapters();
 }
 
-function addSubChapter(parentId) {
-    for (let ch of chapters) {
-        if (ch.id === parentId) {
-            ch.children.push({ id: Date.now(), title: 'Nouvelle section', level: 2, children: [] });
-            break;
+function addSubChapter(parentId, parentLevel) {
+    const newLevel = parentLevel + 1;
+    const newTitle = newLevel === 2 ? 'Nouvelle section' : 'Nouvelle sous-section';
+
+    function findAndAdd(items) {
+        for (let item of items) {
+            if (item.id === parentId) {
+                if (!item.children) item.children = [];
+                item.children.push({ id: Date.now(), title: newTitle, level: newLevel, children: [] });
+                return true;
+            }
+            if (item.children && findAndAdd(item.children)) return true;
         }
+        return false;
     }
+
+    findAndAdd(chapters);
     renderChapters();
 }
 
@@ -307,7 +325,7 @@ function loadFromLocalStorage() {
             'prenom', 'nom', 'formation', 'ecole', 'annee_scolaire',
             'entreprise_nom', 'entreprise_secteur', 'entreprise_ville',
             'tuteur_nom', 'tuteur_poste', 'tuteur_academique_nom', 'tuteur_academique_poste',
-            'date_debut', 'date_fin', 'poste', 'mission_principale',
+            'date_debut', 'date_fin', 'sujet_stage', 'poste',
             'font_family', 'font_size', 'line_spacing',
             'title1_size', 'title1_color', 'title2_size', 'title2_color',
             'title3_size', 'title3_color', 'margin_top', 'margin_bottom',
@@ -413,8 +431,8 @@ function collectFormData() {
 
         date_debut: getValue('date_debut'),
         date_fin: getValue('date_fin'),
+        sujet_stage: getValue('sujet_stage'),
         poste: getValue('poste'),
-        mission_principale: getValue('mission_principale'),
 
         chapters: chapters,
         glossary: glossary,
@@ -484,7 +502,7 @@ function updatePreview() {
             html += `<div class="preview-cover" style="text-align:center;">
                 <div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT</div>
                 <div style="font-size:14px;color:#666;">DE STAGE</div>
-                ${data.poste ? `<p style="font-size:10px;color:${primaryColor};margin-top:8px;font-style:italic;">${data.poste}</p>` : ''}
+                ${data.sujet_stage ? `<p style="font-size:11px;font-weight:bold;color:${primaryColor};margin-top:8px;">${data.sujet_stage}</p>` : ''}
                 <p style="margin-top:15px;font-size:12px;"><strong>${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</strong></p>
                 <p style="font-size:9px;">${data.formation || '[Formation]'}</p>
                 <p style="font-size:8px;color:#666;">${data.ecole || '[École]'} • ${data.annee_scolaire || '[Année]'}</p>
@@ -505,35 +523,322 @@ function updatePreview() {
 
             html += `</div>`;
 
-        } else if (coverModel === 'corporate') {
-            // Style Corporate (sidebar)
-            html += `<div class="preview-page preview-cover-corporate" style="display:flex;padding:0;">`;
+        } else if (coverModel === 'elegant') {
+            // Style Elegant (ligne verticale)
+            html += `<div class="preview-page" style="display:flex;padding:0;">`;
 
-            // Sidebar
-            html += `<div class="preview-sidebar" style="width:30%;background:${primaryColor};padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                <div class="preview-logo-sm" style="margin-bottom:10px;">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}" style="max-height:25px;">` : ''}</div>
-                <div style="color:white;font-size:10px;font-weight:bold;">${data.annee_scolaire || '[Année]'}</div>
-                <div class="preview-logo-sm" style="margin-top:10px;">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}" style="max-height:25px;">` : ''}</div>
-            </div>`;
+            // Ligne verticale
+            html += `<div style="width:8px;background:${primaryColor};"></div>`;
 
             // Contenu principal
-            html += `<div style="flex:1;padding:15px 10px;">
-                <div style="font-size:16px;font-weight:bold;color:${primaryColor};">RAPPORT</div>
-                <div style="font-size:13px;color:#555;">DE STAGE</div>
-                <p style="font-size:9px;font-style:italic;margin-top:5px;">${data.formation || '[Formation]'}</p>
-                <div style="border-top:2px solid ${primaryColor};width:50%;margin:8px 0;"></div>
-                ${data.logos.image_centrale ? `<div style="margin:8px 0;"><img src="${data.logos.image_centrale}" style="max-height:40px;max-width:100%;"></div>` : ''}
-                <p style="font-size:7px;color:#888;margin-top:8px;">RÉALISÉ PAR</p>
-                <p style="font-size:10px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>
-                <p style="font-size:8px;">${data.ecole || '[École]'}</p>
-                <p style="font-size:7px;color:#888;margin-top:8px;">ENTREPRISE</p>
-                <p style="font-size:9px;font-weight:bold;color:${primaryColor};">${data.entreprise_nom || '[Entreprise]'}</p>
-                <p style="font-size:7px;">${data.entreprise_ville || ''}</p>
-                <p style="font-size:7px;color:#888;margin-top:8px;">PÉRIODE</p>
-                <p style="font-size:8px;">${data.date_debut || '[Date]'} → ${data.date_fin || '[Date]'}</p>
+            html += `<div style="flex:1;padding:15px 12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+                    <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                    <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+                </div>
+                <div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT</div>
+                <div style="font-size:12px;color:#666;margin-bottom:8px;">DE STAGE</div>
+                ${data.sujet_stage ? `<p style="font-size:9px;font-weight:bold;font-style:italic;margin-bottom:10px;">${data.sujet_stage}</p>` : ''}
+                <div style="border-top:1px solid ${primaryColor};width:80%;margin:10px 0;"></div>
+                <p style="font-size:11px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>
+                <p style="font-size:8px;font-style:italic;">${data.formation || '[Formation]'}</p>
+                <p style="font-size:7px;color:#888;margin-top:3px;">${data.ecole || '[École]'}  |  ${data.annee_scolaire || '[Année]'}</p>
+                <p style="font-size:9px;font-weight:bold;color:${primaryColor};margin-top:12px;">${data.entreprise_nom || '[Entreprise]'}</p>
+                <p style="font-size:7px;color:#666;">${data.entreprise_ville || ''}</p>
+                <p style="font-size:8px;font-weight:bold;margin-top:10px;">${data.date_debut || '[Date]'}  →  ${data.date_fin || '[Date]'}</p>
             </div>`;
 
             html += `</div>`;
+
+        } else if (coverModel === 'minimaliste') {
+            // Style Minimaliste - Ultra epure
+            html += `<div class="preview-page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">`;
+            html += `<div style="margin-bottom:30px;">
+                <div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT DE STAGE</div>
+                <div style="font-size:10px;color:${primaryColor};margin-top:5px;">─────────────</div>
+            </div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:11px;font-style:italic;margin-bottom:20px;">${data.sujet_stage}</p>`;
+            }
+            html += `<p style="font-size:12px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:9px;color:#666;">${data.formation || '[Formation]'}</p>`;
+            html += `<div style="margin-top:40px;font-size:8px;color:#888;">
+                <p>${data.entreprise_nom || '[Entreprise]'}</p>
+                <p>${data.date_debut || '[Date]'} — ${data.date_fin || '[Date]'}</p>
+            </div>`;
+            html += `</div>`;
+
+        } else if (coverModel === 'academique') {
+            // Style Academique - Cadre double
+            html += `<div class="preview-page" style="padding:8px;">`;
+            html += `<div style="border:3px solid ${primaryColor};padding:6px;">`;
+            html += `<div style="border:1px solid ${primaryColor};padding:12px;text-align:center;">`;
+
+            // Logos
+            html += `<div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            html += `<p style="font-size:10px;font-weight:bold;color:${primaryColor};">${data.ecole || '[École]'}</p>`;
+            html += `<p style="font-size:8px;margin-bottom:10px;">${data.formation || '[Formation]'}</p>`;
+            html += `<div style="font-size:16px;font-weight:bold;color:${primaryColor};margin:15px 0;">RAPPORT DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:10px;font-style:italic;margin-bottom:10px;">${data.sujet_stage}</p>`;
+            }
+            html += `<p style="font-size:8px;color:#666;margin:10px 0;">Présenté par</p>`;
+            html += `<p style="font-size:11px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;margin-top:10px;">Stage chez ${data.entreprise_nom || '[Entreprise]'}</p>`;
+            html += `<p style="font-size:7px;color:#666;">${data.date_debut || '[Date]'} au ${data.date_fin || '[Date]'}</p>`;
+            html += `<p style="font-size:9px;color:${primaryColor};margin-top:15px;">${data.annee_scolaire || '[Année]'}</p>`;
+
+            html += `</div></div></div>`;
+
+        } else if (coverModel === 'geometrique') {
+            // Style Geometrique - Formes modernes
+            html += `<div class="preview-page" style="position:relative;overflow:hidden;">`;
+
+            // Forme geometrique en haut a droite
+            html += `<div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:linear-gradient(135deg,${primaryColor} 50%,transparent 50%);"></div>`;
+
+            // Bloc colore en haut
+            html += `<div style="display:flex;margin-bottom:20px;">
+                <div style="flex:1;">
+                    <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                </div>
+                <div style="background:${primaryColor};padding:8px 15px;color:white;font-size:9px;font-weight:bold;">
+                    ${data.annee_scolaire || '[Année]'}
+                </div>
+            </div>`;
+
+            html += `<div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:10px;font-style:italic;margin:8px 0;">${data.sujet_stage}</p>`;
+            }
+            html += `<div style="width:60px;height:4px;background:${primaryColor};margin:15px 0;"></div>`;
+
+            html += `<p style="font-size:11px;font-weight:bold;margin-top:20px;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;">${data.formation || '[Formation]'}</p>`;
+            html += `<p style="font-size:7px;color:#888;">${data.ecole || '[École]'}</p>`;
+
+            html += `<div style="margin-top:25px;font-size:8px;">
+                <p><span style="color:#888;">Entreprise :</span> <strong>${data.entreprise_nom || '[Entreprise]'}</strong></p>
+                <p style="color:#666;">${data.date_debut || '[Date]'} au ${data.date_fin || '[Date]'}</p>
+            </div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'bicolore') {
+            // Style Bicolore - Split vertical
+            html += `<div class="preview-page" style="display:flex;padding:0;">`;
+
+            // Colonne gauche coloree
+            html += `<div style="width:35%;background:${primaryColor};padding:12px;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;">`;
+            if (data.logos.logo_ecole) {
+                html += `<div class="preview-logo-sm" style="background:white;margin-bottom:15px;"><img src="${data.logos.logo_ecole}"></div>`;
+            }
+            html += `<div style="font-size:14px;font-weight:bold;margin:20px 0;">STAGE</div>`;
+            html += `<p style="font-size:8px;opacity:0.8;">${data.annee_scolaire || '[Année]'}</p>`;
+            html += `<p style="font-size:7px;opacity:0.7;margin-top:10px;text-align:center;">${data.date_debut || '[Date]'}<br>—<br>${data.date_fin || '[Date]'}</p>`;
+            if (data.logos.logo_entreprise) {
+                html += `<div class="preview-logo-sm" style="background:white;margin-top:20px;"><img src="${data.logos.logo_entreprise}"></div>`;
+            }
+            html += `</div>`;
+
+            // Colonne droite
+            html += `<div style="flex:1;padding:15px;display:flex;flex-direction:column;justify-content:center;">`;
+            html += `<div style="font-size:16px;font-weight:bold;color:${primaryColor};line-height:1.2;">RAPPORT<br>DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:9px;font-style:italic;margin:10px 0;">${data.sujet_stage}</p>`;
+            }
+            html += `<p style="font-size:11px;font-weight:bold;margin-top:20px;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;">${data.formation || '[Formation]'}</p>`;
+            html += `<p style="font-size:7px;color:#888;">${data.ecole || '[École]'}</p>`;
+            html += `<p style="font-size:10px;font-weight:bold;color:${primaryColor};margin-top:15px;">${data.entreprise_nom || '[Entreprise]'}</p>`;
+            html += `</div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'pro') {
+            // Style Pro - Corporate business
+            html += `<div class="preview-page" style="padding:0;">`;
+
+            // Header bar
+            html += `<div style="background:${primaryColor};padding:10px;display:flex;justify-content:space-between;align-items:center;">
+                <div class="preview-logo-sm" style="background:white;">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <span style="color:white;font-size:8px;">${data.annee_scolaire || '[Année]'}</span>
+                <div class="preview-logo-sm" style="background:white;">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            // Contenu central
+            html += `<div style="padding:20px;text-align:center;">`;
+            html += `<div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:10px;font-style:italic;margin:10px 0;">${data.sujet_stage}</p>`;
+            }
+            html += `<p style="font-size:11px;font-weight:bold;margin-top:25px;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;color:#666;">${data.formation || '[Formation]'}  •  ${data.ecole || '[École]'}</p>`;
+
+            // Info table
+            html += `<div style="margin-top:20px;text-align:left;font-size:8px;">
+                <div style="display:flex;margin:5px 0;"><span style="color:#888;width:60px;">Entreprise</span><strong>${data.entreprise_nom || '[Entreprise]'}</strong></div>
+                <div style="display:flex;margin:5px 0;"><span style="color:#888;width:60px;">Période</span>${data.date_debut || '[Date]'} — ${data.date_fin || '[Date]'}</div>
+                <div style="display:flex;margin:5px 0;"><span style="color:#888;width:60px;">Tuteur</span>${data.tuteur_nom || '[Nom]'}</div>
+            </div>`;
+            html += `</div>`;
+
+            // Footer bar
+            html += `<div style="border-top:3px solid ${primaryColor};padding:8px;text-align:center;">
+                <span style="font-size:7px;color:#888;">${data.entreprise_nom || ''} ${data.entreprise_ville ? '— ' + data.entreprise_ville : ''}</span>
+            </div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'gradient') {
+            // Style Gradient - Degrade colore
+            html += `<div class="preview-page" style="padding:0;">`;
+
+            // Bandeau degrade
+            html += `<div style="background:linear-gradient(135deg, ${primaryColor} 0%, #667eea 50%, #764ba2 100%);padding:20px;text-align:center;">`;
+            html += `<div style="font-size:16px;font-weight:bold;color:white;">RAPPORT DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:9px;font-style:italic;color:rgba(255,255,255,0.9);margin-top:8px;">${data.sujet_stage}</p>`;
+            }
+            html += `</div>`;
+
+            // Logos
+            html += `<div style="display:flex;justify-content:center;gap:20px;margin:15px 0;">
+                <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            // Contenu
+            html += `<div style="padding:15px;text-align:center;">`;
+            html += `<p style="font-size:11px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;color:#666;">${data.formation || '[Formation]'}</p>`;
+            html += `<p style="font-size:7px;color:#888;">${data.ecole || '[École]'}  •  ${data.annee_scolaire || '[Année]'}</p>`;
+            html += `<p style="font-size:9px;font-weight:bold;color:${primaryColor};margin-top:15px;">${data.entreprise_nom || '[Entreprise]'}</p>`;
+            html += `<p style="font-size:7px;color:#666;">${data.date_debut || '[Date]'} — ${data.date_fin || '[Date]'}</p>`;
+            html += `</div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'timeline') {
+            // Style Timeline - Frise temporelle
+            html += `<div class="preview-page" style="display:flex;padding:0;">`;
+
+            // Colonne timeline
+            html += `<div style="width:25px;padding:15px 5px;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:8px;height:8px;background:${primaryColor};border-radius:50%;margin-bottom:5px;"></div>
+                <div style="font-size:5px;color:#888;margin-bottom:8px;">${data.date_debut ? data.date_debut.split('-')[2] : ''}</div>
+                <div style="flex:1;width:2px;background:linear-gradient(to bottom,${primaryColor},#818cf8);"></div>
+                <div style="font-size:5px;color:#888;margin-top:8px;">${data.date_fin ? data.date_fin.split('-')[2] : ''}</div>
+                <div style="width:8px;height:8px;background:#818cf8;border-radius:50%;margin-top:5px;"></div>
+            </div>`;
+
+            // Contenu
+            html += `<div style="flex:1;padding:15px 10px;">`;
+
+            // Logos
+            html += `<div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+                <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            html += `<div style="font-size:16px;font-weight:bold;color:${primaryColor};">RAPPORT DE STAGE</div>`;
+            if (data.sujet_stage) {
+                html += `<p style="font-size:9px;font-style:italic;margin:8px 0;">${data.sujet_stage}</p>`;
+            }
+            html += `<p style="font-size:10px;font-weight:bold;margin-top:20px;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:7px;color:#888;">${data.formation || '[Formation]'}</p>`;
+            html += `<p style="font-size:9px;font-weight:bold;color:${primaryColor};margin-top:15px;">${data.entreprise_nom || '[Entreprise]'}</p>`;
+            html += `</div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'creative') {
+            // Style Creative - Design original
+            html += `<div class="preview-page" style="position:relative;overflow:hidden;">`;
+
+            // Cercles decoratifs
+            html += `<div style="position:absolute;top:-20px;right:-20px;width:60px;height:60px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:50%;opacity:0.7;"></div>`;
+            html += `<div style="position:absolute;bottom:-15px;left:-15px;width:40px;height:40px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:50%;opacity:0.5;"></div>`;
+
+            // Logos
+            html += `<div style="display:flex;justify-content:space-between;margin-bottom:20px;position:relative;z-index:1;">
+                <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            // Titre stylise
+            html += `<div style="text-align:center;position:relative;z-index:1;">`;
+            html += `<div style="font-size:20px;font-weight:bold;color:${primaryColor};">RAPPORT</div>`;
+            html += `<div style="font-size:12px;color:#999;">DE STAGE</div>`;
+            html += `<div style="width:50%;height:2px;background:linear-gradient(90deg,#f093fb,#f5576c);margin:10px auto;"></div>`;
+
+            if (data.sujet_stage) {
+                html += `<p style="font-size:9px;font-style:italic;margin:10px 0;">« ${data.sujet_stage} »</p>`;
+            }
+
+            html += `<p style="font-size:12px;font-weight:bold;margin-top:25px;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>`;
+            html += `<p style="font-size:8px;color:#888;">${data.formation || '[Formation]'}</p>`;
+            html += `<p style="font-size:7px;">${data.ecole || '[École]'}  ✦  ${data.annee_scolaire || '[Année]'}</p>`;
+
+            html += `<div style="width:30%;height:1px;background:#ddd;margin:15px auto;"></div>`;
+            html += `<p style="font-size:9px;font-weight:bold;color:${primaryColor};">${data.entreprise_nom || '[Entreprise]'}</p>`;
+            html += `<p style="font-size:7px;color:#888;">${data.date_debut || '[Date]'}  →  ${data.date_fin || '[Date]'}</p>`;
+            html += `</div>`;
+
+            html += `</div>`;
+
+        } else if (coverModel === 'luxe') {
+            // Style Luxe - Elegant avec bordures dorees
+            html += `<div class="preview-page" style="padding:6px;background:#fdfbfb;">`;
+
+            // Double bordure doree
+            html += `<div style="border:2px solid #b8860b;padding:4px;">`;
+            html += `<div style="border:1px solid #b8860b;padding:12px;">`;
+
+            // Logos
+            html += `<div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+                <div class="preview-logo-sm">${data.logos.logo_ecole ? `<img src="${data.logos.logo_ecole}">` : ''}</div>
+                <div class="preview-logo-sm">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
+            </div>`;
+
+            // Ligne decorative
+            html += `<div style="display:flex;align-items:center;justify-content:center;margin:10px 0;">
+                <div style="width:30px;height:1px;background:#b8860b;"></div>
+                <div style="width:6px;height:6px;border:1px solid #b8860b;transform:rotate(45deg);margin:0 8px;"></div>
+                <div style="width:30px;height:1px;background:#b8860b;"></div>
+            </div>`;
+
+            // Titre
+            html += `<div style="text-align:center;">
+                <div style="font-size:18px;font-weight:bold;color:#b8860b;letter-spacing:2px;">RAPPORT DE STAGE</div>
+            </div>`;
+
+            if (data.sujet_stage) {
+                html += `<p style="text-align:center;font-size:9px;font-style:italic;margin:10px 0;">« ${data.sujet_stage} »</p>`;
+            }
+
+            // Separateur
+            html += `<div style="width:60%;height:1px;background:linear-gradient(90deg,transparent,#b8860b,transparent);margin:12px auto;"></div>`;
+
+            // Infos etudiant
+            html += `<div style="text-align:center;">
+                <p style="font-size:11px;font-weight:bold;">${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</p>
+                <p style="font-size:8px;color:#666;">${data.formation || '[Formation]'}</p>
+                <p style="font-size:7px;color:#888;">${data.ecole || '[École]'}  |  ${data.annee_scolaire || '[Année]'}</p>
+            </div>`;
+
+            // Entreprise
+            html += `<div style="text-align:center;margin-top:15px;">
+                <p style="font-size:9px;font-weight:bold;color:#b8860b;">${data.entreprise_nom || '[Entreprise]'}</p>
+                <p style="font-size:7px;color:#666;">${data.entreprise_ville || ''}</p>
+                <p style="font-size:7px;margin-top:5px;">${data.date_debut || '[Date]'} — ${data.date_fin || '[Date]'}</p>
+            </div>`;
+
+            html += `</div></div></div>`;
 
         } else {
             // Style Classique (défaut)
@@ -548,6 +853,7 @@ function updatePreview() {
             // Contenu page de garde
             html += `<div class="preview-cover">
                 <div class="preview-cover-title" style="color:${primaryColor};">RAPPORT DE STAGE</div>
+                ${data.sujet_stage ? `<p style="font-size:11px;font-weight:bold;color:${primaryColor};margin:8px 0;">${data.sujet_stage}</p>` : ''}
                 <p style="font-size:10px;font-style:italic;">${data.formation || '[Formation]'}</p>
                 <div style="border-top:2px solid ${primaryColor};width:60%;margin:10px auto;"></div>
                 ${data.logos.image_centrale ? `<div class="preview-cover-image"><img src="${data.logos.image_centrale}"></div>` : ''}
@@ -592,6 +898,12 @@ function updatePreview() {
             html += `<div class="preview-toc-item">${num}. ${ch.title}</div>`;
             ch.children.forEach((sub, j) => {
                 html += `<div class="preview-toc-item level-2">${num}.${j+1} ${sub.title}</div>`;
+                // Niveau 3 : sous-sous-chapitres
+                if (sub.children) {
+                    sub.children.forEach((subsub, k) => {
+                        html += `<div class="preview-toc-item level-3">${num}.${j+1}.${k+1} ${subsub.title}</div>`;
+                    });
+                }
             });
         });
 
@@ -658,17 +970,17 @@ function updatePreview() {
 }
 
 // ===== GENERATE REPORT =====
-async function generateReport(format) {
-    const btn = document.querySelector(format === 'docx' ? '.btn-primary' : '.btn-pdf');
+async function generateReport() {
+    const btn = document.querySelector('.btn-primary');
     const originalText = btn.textContent;
 
     btn.disabled = true;
-    btn.innerHTML = '⏳...';
+    btn.innerHTML = 'Generation...';
 
     try {
         const data = collectFormData();
 
-        const response = await fetch(`/generate?format=${format}`, {
+        const response = await fetch('/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -680,7 +992,7 @@ async function generateReport(format) {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `rapport_stage_${data.nom || 'rapport'}.${format}`;
+        a.download = `rapport_stage_${data.nom || 'rapport'}.docx`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);

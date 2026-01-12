@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Query
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -6,9 +6,6 @@ from pydantic import BaseModel
 from typing import Optional
 from pathlib import Path
 import io
-import subprocess
-import tempfile
-import os
 
 from generator import generate_report
 
@@ -99,8 +96,8 @@ class ReportData(BaseModel):
     # Stage
     date_debut: str = ""
     date_fin: str = ""
-    poste: str = ""
-    mission_principale: str = ""
+    sujet_stage: str = ""  # Titre/Sujet du stage (affiché en gros sur page de garde)
+    poste: str = ""  # Intitulé du poste occupé
 
     # Structure
     chapters: list[ChapterItem] = []
@@ -131,58 +128,18 @@ async def index(request: Request):
 
 
 @app.post("/generate")
-async def generate(data: ReportData, format: str = Query(default="docx")):
+async def generate(data: ReportData):
     # Générer le document Word
     doc_buffer = generate_report(data)
 
     # Nom du fichier
-    filename = f"rapport_stage_{data.nom or 'rapport'}"
-
-    if format == "pdf":
-        pdf_buffer = convert_to_pdf(doc_buffer)
-        if pdf_buffer:
-            return StreamingResponse(
-                io.BytesIO(pdf_buffer),
-                media_type="application/pdf",
-                headers={"Content-Disposition": f"attachment; filename={filename}.pdf"}
-            )
-        else:
-            return StreamingResponse(
-                io.BytesIO(doc_buffer.getvalue()),
-                media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                headers={"Content-Disposition": f"attachment; filename={filename}.docx"}
-            )
+    filename = f"rapport_stage_{data.nom or 'rapport'}.docx"
 
     return StreamingResponse(
         io.BytesIO(doc_buffer.getvalue()),
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        headers={"Content-Disposition": f"attachment; filename={filename}.docx"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
-
-
-def convert_to_pdf(docx_buffer: io.BytesIO) -> Optional[bytes]:
-    """Convertit un fichier DOCX en PDF via LibreOffice."""
-    try:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            docx_path = os.path.join(tmpdir, "document.docx")
-            with open(docx_path, "wb") as f:
-                f.write(docx_buffer.getvalue())
-
-            result = subprocess.run([
-                "libreoffice", "--headless", "--convert-to", "pdf",
-                "--outdir", tmpdir, docx_path
-            ], capture_output=True, timeout=30)
-
-            if result.returncode == 0:
-                pdf_path = os.path.join(tmpdir, "document.pdf")
-                if os.path.exists(pdf_path):
-                    with open(pdf_path, "rb") as f:
-                        return f.read()
-
-    except Exception as e:
-        print(f"PDF conversion error: {e}")
-
-    return None
 
 
 if __name__ == "__main__":

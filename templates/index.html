@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generateur de Rapport de Stage</title>
+    <title>DocReport - Generateur de Rapport</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23dc2626'/><text x='50' y='68' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>D</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <div class="max-w-screen-xl mx-auto flex gap-4 p-4">
+    <!-- Header -->
+    <header class="bg-white shadow-md mb-4">
+        <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">
+                    <span class="inline-flex items-center justify-center bg-red-600 rounded text-white text-2xl font-extrabold" style="padding:0 5px;margin-right:1px;">D</span>ocReport
+                </h1>
+                <p class="text-xs text-gray-500">Generez votre rapport de stage professionnel en quelques minutes</p>
+            </div>
+            <div class="text-xs text-gray-400">v3.0</div>
+        </div>
+    </header>
+
+    <div class="max-w-screen-xl mx-auto flex gap-4 px-4 pb-12">
 
         <!-- LEFT: Formulaire avec Tabs (60%) -->
         <div class="w-3/5">
-            <div class="bg-white rounded-lg shadow">
+            <div class="bg-white rounded-xl shadow-lg shadow-gray-200/50">
 
                 <!-- Tabs Navigation -->
                 <div class="border-b">
                     <nav class="flex">
                         <button class="tab-btn active" data-tab="infos">Informations</button>
+                        <button class="tab-btn" data-tab="modeles">Modeles</button>
                         <button class="tab-btn" data-tab="structure">Structure</button>
                         <button class="tab-btn" data-tab="mise-en-page">Mise en page</button>
                     </nav>
@@ -112,47 +127,13 @@
                                     <input type="date" id="date_fin">
                                 </div>
                                 <div class="form-group col-span-2">
-                                    <label>Poste</label>
-                                    <input type="text" id="poste" placeholder="Intitule du poste">
+                                    <label>Sujet du stage <span class="text-xs text-gray-400">(affiche en gros sur la page de garde)</span></label>
+                                    <input type="text" id="sujet_stage" placeholder="Ex: Developpement d'une application web de gestion...">
                                 </div>
                                 <div class="form-group col-span-2">
-                                    <label>Mission principale</label>
-                                    <textarea id="mission_principale" rows="2" placeholder="Description de la mission"></textarea>
+                                    <label>Poste occupe <span class="text-xs text-gray-400">(optionnel)</span></label>
+                                    <input type="text" id="poste" placeholder="Ex: Developpeur Full Stack, Assistant chef de projet...">
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Modele page de garde -->
-                        <div class="mb-6">
-                            <h3 class="section-title">Modele de page de garde</h3>
-                            <div class="grid grid-cols-3 gap-3">
-                                <label class="model-option">
-                                    <input type="radio" name="cover_model" value="classique" checked onchange="updatePreview()">
-                                    <div class="model-preview model-classique">
-                                        <div class="mp-logos"></div>
-                                        <div class="mp-title"></div>
-                                        <div class="mp-line"></div>
-                                        <div class="mp-info"></div>
-                                    </div>
-                                    <span>Classique</span>
-                                </label>
-                                <label class="model-option">
-                                    <input type="radio" name="cover_model" value="moderne" onchange="updatePreview()">
-                                    <div class="model-preview model-moderne">
-                                        <div class="mp-banner"></div>
-                                        <div class="mp-title"></div>
-                                        <div class="mp-info"></div>
-                                    </div>
-                                    <span>Moderne</span>
-                                </label>
-                                <label class="model-option">
-                                    <input type="radio" name="cover_model" value="corporate" onchange="updatePreview()">
-                                    <div class="model-preview model-corporate">
-                                        <div class="mp-sidebar"></div>
-                                        <div class="mp-content"></div>
-                                    </div>
-                                    <span>Corporate</span>
-                                </label>
                             </div>
                         </div>
 
@@ -182,11 +163,160 @@
                         </div>
 
                         <div class="flex justify-end">
+                            <button class="btn-primary" onclick="goToTab('modeles')">Suivant</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Modeles de page de garde -->
+                    <div class="tab-content" id="tab-modeles">
+                        <h3 class="section-title mb-4">Choisissez votre modele de page de garde</h3>
+
+                        <div class="grid grid-cols-4 gap-4 mb-6">
+                            <!-- Modele 1: Classique -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="classique" checked onchange="updatePreview()">
+                                <div class="model-thumb model-classique">
+                                    <div class="mt-logos"></div>
+                                    <div class="mt-title"></div>
+                                    <div class="mt-subtitle"></div>
+                                    <div class="mt-info"></div>
+                                </div>
+                                <span class="model-name">Classique</span>
+                                <span class="model-desc">Standard academique</span>
+                            </label>
+
+                            <!-- Modele 2: Moderne -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="moderne" onchange="updatePreview()">
+                                <div class="model-thumb model-moderne">
+                                    <div class="mt-banner"></div>
+                                    <div class="mt-content"></div>
+                                </div>
+                                <span class="model-name">Moderne</span>
+                                <span class="model-desc">Bandeau colore</span>
+                            </label>
+
+                            <!-- Modele 3: Elegant -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="elegant" onchange="updatePreview()">
+                                <div class="model-thumb model-elegant">
+                                    <div class="mt-stripe"></div>
+                                    <div class="mt-content"></div>
+                                </div>
+                                <span class="model-name">Elegant</span>
+                                <span class="model-desc">Ligne verticale</span>
+                            </label>
+
+                            <!-- Modele 4: Minimaliste -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="minimaliste" onchange="updatePreview()">
+                                <div class="model-thumb model-minimaliste">
+                                    <div class="mt-min-title"></div>
+                                    <div class="mt-min-line"></div>
+                                    <div class="mt-min-info"></div>
+                                </div>
+                                <span class="model-name">Minimaliste</span>
+                                <span class="model-desc">Ultra epure</span>
+                            </label>
+
+                            <!-- Modele 5: Academique -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="academique" onchange="updatePreview()">
+                                <div class="model-thumb model-academique">
+                                    <div class="mt-acad-border">
+                                        <div class="mt-acad-content"></div>
+                                    </div>
+                                </div>
+                                <span class="model-name">Academique</span>
+                                <span class="model-desc">Cadre traditionnel</span>
+                            </label>
+
+                            <!-- Modele 6: Geometrique -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="geometrique" onchange="updatePreview()">
+                                <div class="model-thumb model-geometrique">
+                                    <div class="mt-geo-shapes"></div>
+                                    <div class="mt-geo-content"></div>
+                                </div>
+                                <span class="model-name">Geometrique</span>
+                                <span class="model-desc">Formes modernes</span>
+                            </label>
+
+                            <!-- Modele 7: Bicolore -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="bicolore" onchange="updatePreview()">
+                                <div class="model-thumb model-bicolore">
+                                    <div class="mt-bic-left"></div>
+                                    <div class="mt-bic-right"></div>
+                                </div>
+                                <span class="model-name">Bicolore</span>
+                                <span class="model-desc">Deux sections</span>
+                            </label>
+
+                            <!-- Modele 8: Pro -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="pro" onchange="updatePreview()">
+                                <div class="model-thumb model-pro">
+                                    <div class="mt-pro-header"></div>
+                                    <div class="mt-pro-body"></div>
+                                    <div class="mt-pro-footer"></div>
+                                </div>
+                                <span class="model-name">Pro</span>
+                                <span class="model-desc">Business corporate</span>
+                            </label>
+
+                            <!-- Modele 9: Gradient -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="gradient" onchange="updatePreview()">
+                                <div class="model-thumb model-gradient">
+                                    <div class="mt-grad-bg"></div>
+                                    <div class="mt-grad-content"></div>
+                                </div>
+                                <span class="model-name">Gradient</span>
+                                <span class="model-desc">Degrade colore</span>
+                            </label>
+
+                            <!-- Modele 10: Timeline -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="timeline" onchange="updatePreview()">
+                                <div class="model-thumb model-timeline">
+                                    <div class="mt-tl-line"></div>
+                                    <div class="mt-tl-content"></div>
+                                </div>
+                                <span class="model-name">Timeline</span>
+                                <span class="model-desc">Frise temporelle</span>
+                            </label>
+
+                            <!-- Modele 11: Creative -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="creative" onchange="updatePreview()">
+                                <div class="model-thumb model-creative">
+                                    <div class="mt-crea-circle"></div>
+                                    <div class="mt-crea-content"></div>
+                                </div>
+                                <span class="model-name">Creative</span>
+                                <span class="model-desc">Design original</span>
+                            </label>
+
+                            <!-- Modele 12: Luxe -->
+                            <label class="model-card">
+                                <input type="radio" name="cover_model" value="luxe" onchange="updatePreview()">
+                                <div class="model-thumb model-luxe">
+                                    <div class="mt-luxe-border"></div>
+                                    <div class="mt-luxe-content"></div>
+                                </div>
+                                <span class="model-name">Luxe</span>
+                                <span class="model-desc">Elegant et raffine</span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button class="btn-secondary" onclick="goToTab('infos')">Precedent</button>
                             <button class="btn-primary" onclick="goToTab('structure')">Suivant</button>
                         </div>
                     </div>
 
-                    <!-- Tab 2: Structure -->
+                    <!-- Tab 3: Structure -->
                     <div class="tab-content" id="tab-structure">
 
                         <!-- Sections a inclure -->
@@ -211,12 +341,12 @@
                         </div>
 
                         <div class="flex justify-between">
-                            <button class="btn-secondary" onclick="goToTab('infos')">Precedent</button>
+                            <button class="btn-secondary" onclick="goToTab('modeles')">Precedent</button>
                             <button class="btn-primary" onclick="goToTab('mise-en-page')">Suivant</button>
                         </div>
                     </div>
 
-                    <!-- Tab 3: Mise en page -->
+                    <!-- Tab 4: Mise en page -->
                     <div class="tab-content" id="tab-mise-en-page">
 
                         <!-- Typographie -->
@@ -226,9 +356,19 @@
                                 <div class="form-group">
                                     <label>Police</label>
                                     <select id="font_family">
-                                        <option value="Times New Roman">Times New Roman</option>
-                                        <option value="Arial">Arial</option>
-                                        <option value="Calibri">Calibri</option>
+                                        <optgroup label="Serif (academique)">
+                                            <option value="Times New Roman">Times New Roman</option>
+                                            <option value="Garamond">Garamond</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Cambria">Cambria</option>
+                                        </optgroup>
+                                        <optgroup label="Sans-serif (moderne)">
+                                            <option value="Arial">Arial</option>
+                                            <option value="Calibri">Calibri</option>
+                                            <option value="Verdana">Verdana</option>
+                                            <option value="Helvetica">Helvetica</option>
+                                            <option value="Trebuchet MS">Trebuchet MS</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -309,10 +449,7 @@
 
                         <div class="flex justify-between">
                             <button class="btn-secondary" onclick="goToTab('structure')">Precedent</button>
-                            <div class="flex gap-2">
-                                <button class="btn-primary" onclick="generateReport('docx')">Telecharger Word</button>
-                                <button class="btn-pdf" onclick="generateReport('pdf')">Telecharger PDF</button>
-                            </div>
+                            <button class="btn-primary" onclick="generateReport()">Telecharger Word</button>
                         </div>
                     </div>
 
@@ -322,8 +459,8 @@
 
         <!-- RIGHT: Apercu (40%) -->
         <div class="w-2/5">
-            <div class="bg-white rounded-lg shadow p-4 sticky top-4">
-                <h3 class="text-sm font-medium text-gray-600 mb-3">Apercu</h3>
+            <div class="bg-white rounded-xl shadow-lg shadow-gray-200/50 p-4 sticky top-4">
+                <h3 class="text-sm font-medium text-gray-600 mb-3">Apercu en direct</h3>
                 <div id="documentPreview" class="preview-box"></div>
             </div>
         </div>
@@ -331,6 +468,14 @@
     </div>
 
     <div id="saveIndicator" class="save-indicator"><span>Sauvegarde</span></div>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 py-2 border-t border-gray-200 bg-white z-50">
+        <div class="max-w-screen-xl mx-auto px-4 flex items-center justify-between">
+            <span class="text-xs text-gray-400">DocReport v3.0</span>
+            <span class="text-xs text-gray-400">MB</span>
+        </div>
+    </footer>
 
     <script src="/static/app.js"></script>
 </body>
