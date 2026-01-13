@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAutoSave();
     initDefaultChapters();
     initTabs();
+    initDarkMode();
     updatePreview();
 
     // Auto-update preview on any change
@@ -26,6 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Gantt section visibility
     toggleGanttSection();
 });
+
+// ===== DARK MODE =====
+function initDarkMode() {
+    const toggle = document.getElementById('darkModeToggle');
+    const savedMode = localStorage.getItem('darkMode');
+
+    // Apply saved preference
+    if (savedMode === 'true') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Toggle handler
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        });
+    }
+}
 
 function initTabs() {
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -481,6 +502,12 @@ function updatePreview() {
     const data = collectFormData();
     const preview = document.getElementById('documentPreview');
     const primaryColor = data.style.title1_color || '#1a365d';
+    const secondaryColor = data.style.title2_color || '#000000';
+    const fontFamily = data.style.font_family || 'Times New Roman';
+    const baseFontSize = data.style.font_size || 12;
+
+    // Calculer le ratio de taille pour le preview (base 10px dans preview = 12pt dans doc)
+    const fontRatio = baseFontSize / 12;
 
     let html = '';
 
@@ -570,9 +597,9 @@ function updatePreview() {
 
         } else if (coverModel === 'academique') {
             // Style Academique - Cadre double
-            html += `<div class="preview-page" style="padding:8px;">`;
-            html += `<div style="border:3px solid ${primaryColor};padding:6px;">`;
-            html += `<div style="border:1px solid ${primaryColor};padding:12px;text-align:center;">`;
+            html += `<div class="preview-page" style="padding:0;">`;
+            html += `<div style="border:3px solid ${primaryColor};padding:6px;height:100%;box-sizing:border-box;">`;
+            html += `<div style="border:1px solid ${primaryColor};padding:12px;text-align:center;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">`;
 
             // Logos
             html += `<div style="display:flex;justify-content:space-between;margin-bottom:10px;">
@@ -661,7 +688,7 @@ function updatePreview() {
 
         } else if (coverModel === 'pro') {
             // Style Pro - Corporate business
-            html += `<div class="preview-page" style="padding:0;">`;
+            html += `<div class="preview-page" style="padding:0;display:flex;flex-direction:column;">`;
 
             // Header bar
             html += `<div style="background:${primaryColor};padding:10px;display:flex;justify-content:space-between;align-items:center;">
@@ -670,8 +697,8 @@ function updatePreview() {
                 <div class="preview-logo-sm" style="background:white;">${data.logos.logo_entreprise ? `<img src="${data.logos.logo_entreprise}">` : ''}</div>
             </div>`;
 
-            // Contenu central
-            html += `<div style="padding:20px;text-align:center;">`;
+            // Contenu central - flex:1 pour pousser le footer en bas
+            html += `<div style="flex:1;padding:20px;text-align:center;display:flex;flex-direction:column;justify-content:center;">`;
             html += `<div style="font-size:18px;font-weight:bold;color:${primaryColor};">RAPPORT DE STAGE</div>`;
             if (data.sujet_stage) {
                 html += `<p style="font-size:10px;font-style:italic;margin:10px 0;">${data.sujet_stage}</p>`;
@@ -687,7 +714,7 @@ function updatePreview() {
             </div>`;
             html += `</div>`;
 
-            // Footer bar
+            // Footer bar - collé en bas
             html += `<div style="border-top:3px solid ${primaryColor};padding:8px;text-align:center;">
                 <span style="font-size:7px;color:#888;">${data.entreprise_nom || ''} ${data.entreprise_ville ? '— ' + data.entreprise_ville : ''}</span>
             </div>`;
@@ -793,11 +820,11 @@ function updatePreview() {
 
         } else if (coverModel === 'luxe') {
             // Style Luxe - Elegant avec bordures dorees
-            html += `<div class="preview-page" style="padding:6px;background:#fdfbfb;">`;
+            html += `<div class="preview-page" style="padding:0;background:#fdfbfb;">`;
 
             // Double bordure doree
-            html += `<div style="border:2px solid #b8860b;padding:4px;">`;
-            html += `<div style="border:1px solid #b8860b;padding:12px;">`;
+            html += `<div style="border:3px solid #b8860b;padding:4px;height:100%;box-sizing:border-box;">`;
+            html += `<div style="border:1px solid #b8860b;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">`;
 
             // Logos
             html += `<div style="display:flex;justify-content:space-between;margin-bottom:15px;">
@@ -851,24 +878,24 @@ function updatePreview() {
             </div>`;
 
             // Contenu page de garde
-            html += `<div class="preview-cover">
-                <div class="preview-cover-title" style="color:${primaryColor};">RAPPORT DE STAGE</div>
-                ${data.sujet_stage ? `<p style="font-size:11px;font-weight:bold;color:${primaryColor};margin:8px 0;">${data.sujet_stage}</p>` : ''}
-                <p style="font-size:10px;font-style:italic;">${data.formation || '[Formation]'}</p>
-                <div style="border-top:2px solid ${primaryColor};width:60%;margin:10px auto;"></div>
-                ${data.logos.image_centrale ? `<div class="preview-cover-image"><img src="${data.logos.image_centrale}"></div>` : ''}
-                <p style="margin-top:10px;font-size:11px;"><strong>${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</strong></p>
-                <p style="font-size:9px;">${data.ecole || '[École]'}</p>
-                <p style="font-size:8px;font-style:italic;">Année ${data.annee_scolaire || '[Année]'}</p>
-                <div style="border-top:2px solid ${primaryColor};width:60%;margin:10px auto;"></div>
-                <p style="font-size:8px;">Stage chez</p>
-                <p style="font-size:10px;font-weight:bold;color:${primaryColor};">${data.entreprise_nom || '[Entreprise]'}</p>
-                <p style="font-size:8px;">${data.entreprise_ville || '[Ville]'}</p>
-                <p style="font-size:8px;margin-top:8px;">${data.date_debut || '[Date]'} au ${data.date_fin || '[Date]'}</p>
+            html += `<div class="preview-cover" style="padding:0.5rem 0;">
+                <div class="preview-cover-title" style="color:${primaryColor};margin-bottom:0.5rem;">RAPPORT DE STAGE</div>
+                ${data.sujet_stage ? `<p style="font-size:10px;font-weight:bold;color:${primaryColor};margin:5px 0;">${data.sujet_stage}</p>` : ''}
+                <p style="font-size:9px;font-style:italic;">${data.formation || '[Formation]'}</p>
+                <div style="border-top:2px solid ${primaryColor};width:60%;margin:8px auto;"></div>
+                ${data.logos.image_centrale ? `<div class="preview-cover-image" style="width:60px;height:60px;"><img src="${data.logos.image_centrale}"></div>` : ''}
+                <p style="margin-top:8px;font-size:10px;"><strong>${data.prenom || '[Prénom]'} ${data.nom || '[Nom]'}</strong></p>
+                <p style="font-size:8px;">${data.ecole || '[École]'}</p>
+                <p style="font-size:7px;font-style:italic;">Année ${data.annee_scolaire || '[Année]'}</p>
+                <div style="border-top:2px solid ${primaryColor};width:60%;margin:8px auto;"></div>
+                <p style="font-size:7px;">Stage chez</p>
+                <p style="font-size:9px;font-weight:bold;color:${primaryColor};">${data.entreprise_nom || '[Entreprise]'}</p>
+                <p style="font-size:7px;">${data.entreprise_ville || '[Ville]'}</p>
+                <p style="font-size:7px;margin-top:5px;">${data.date_debut || '[Date]'} au ${data.date_fin || '[Date]'}</p>
             </div>`;
 
             // Tuteurs
-            html += `<div style="display:flex;justify-content:space-around;font-size:7px;margin-top:10px;">
+            html += `<div style="display:flex;justify-content:space-around;font-size:6px;margin-top:5px;">
                 <div style="text-align:center;">
                     <div style="color:#888;">Tuteur entreprise</div>
                     <div><strong>${data.tuteur_nom || '[Nom]'}</strong></div>
@@ -888,30 +915,32 @@ function updatePreview() {
         html += `<div class="preview-page">
             <div class="preview-section-title">Table des matières</div>`;
 
+        let pageNum = 2; // Commence après la page de garde
+
         if (data.include_thanks) {
-            html += `<div class="preview-toc-item">Remerciements</div>`;
+            html += `<div class="preview-toc-item"><span class="toc-title">Remerciements</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
         }
 
         let num = 0;
         data.chapters.forEach(ch => {
             num++;
-            html += `<div class="preview-toc-item">${num}. ${ch.title}</div>`;
+            html += `<div class="preview-toc-item"><span class="toc-title">${num}. ${ch.title}</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
             ch.children.forEach((sub, j) => {
-                html += `<div class="preview-toc-item level-2">${num}.${j+1} ${sub.title}</div>`;
+                html += `<div class="preview-toc-item level-2"><span class="toc-title">${num}.${j+1} ${sub.title}</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
                 // Niveau 3 : sous-sous-chapitres
                 if (sub.children) {
                     sub.children.forEach((subsub, k) => {
-                        html += `<div class="preview-toc-item level-3">${num}.${j+1}.${k+1} ${subsub.title}</div>`;
+                        html += `<div class="preview-toc-item level-3"><span class="toc-title">${num}.${j+1}.${k+1} ${subsub.title}</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
                     });
                 }
             });
         });
 
         if (data.include_glossary && data.glossary.length > 0) {
-            html += `<div class="preview-toc-item">Glossaire</div>`;
+            html += `<div class="preview-toc-item"><span class="toc-title">Glossaire</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
         }
         if (data.include_annexes) {
-            html += `<div class="preview-toc-item">Annexes</div>`;
+            html += `<div class="preview-toc-item"><span class="toc-title">Annexes</span><span class="toc-dots"></span><span class="toc-page">${pageNum++}</span></div>`;
         }
 
         html += `</div>`;
@@ -922,7 +951,7 @@ function updatePreview() {
         html += `<div class="preview-page">
             <div class="preview-section-title">Liste des figures</div>`;
         data.figures.forEach((fig, i) => {
-            html += `<div class="preview-toc-item">Figure ${i+1} : ${fig.name} <span>p.${fig.page}</span></div>`;
+            html += `<div class="preview-toc-item"><span class="toc-title">Figure ${i+1} : ${fig.name}</span><span class="toc-dots"></span><span class="toc-page">${fig.page}</span></div>`;
         });
         html += `</div>`;
     }
@@ -967,6 +996,17 @@ function updatePreview() {
     }
 
     preview.innerHTML = html || '<p style="color:#9ca3af;text-align:center;padding:2rem;">Remplissez le formulaire pour voir l\'aperçu</p>';
+
+    // Appliquer les styles de mise en page à toutes les pages
+    preview.querySelectorAll('.preview-page').forEach(page => {
+        page.style.fontFamily = `"${fontFamily}", serif`;
+    });
+
+    // Appliquer les couleurs aux titres de section
+    preview.querySelectorAll('.preview-section-title').forEach(title => {
+        title.style.color = primaryColor;
+        title.style.borderBottomColor = primaryColor;
+    });
 }
 
 // ===== GENERATE REPORT =====
